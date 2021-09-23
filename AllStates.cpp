@@ -43,35 +43,31 @@
 // Pre- Cond: all states have been created up to maximum length of strings
 // Post-Cond: output file exists with states listed inside
 //////////////////////////////////////////////////////////////////////////
-void AllStates::PrintOut(char input[], char alpha[])
-{
-  bool success = true;
-  char* output = new char[strlen(input) + 8 + END_STRING];
+void AllStates::PrintOut(char input[], char alpha[]) {
+    bool success = true;
+    char *output = new char[strlen(input) + 8 + END_STRING];
 
-  strcpy(output,input);
-  strcat(output, "_results");
+    strcpy(output, input);
+    strcat(output, "_results");
 
-  //create file streams
-  ofstream outData(output, ios::out);
+    //create file streams
+    std::ofstream outData(output, std::ios::out);
 
-  //open output file, if unsuccessful set boolean return value
-  if(!outData)
-    {
-      cerr << " the results output file cannot be opened " << endl;
-      success = false;
+    //open output file, if unsuccessful set boolean return value
+    if (!outData) {
+        std::cerr << " the results output file cannot be opened " << std::endl;
+        success = false;
     }
-  //otherwise output data
-  else
-    {
-      for(int i = 0; i < m_arraySize; i++)
-	{
-	  outData << "State number: "<<m_StateArray[i]->getNumber() <<endl;
-	  m_StateArray[i]->PrintStringList(&outData, alpha);
-	}
+        //otherwise output data
+    else {
+        for (int i = 0; i < m_arraySize; i++) {
+            outData << "State number: " << m_StateArray[i]->getNumber() << std::endl;
+            m_StateArray[i]->PrintStringList(&outData, alpha);
+        }
     }
-  
-  outData.close();
-  delete[] output;
+
+    outData.close();
+    delete[] output;
 }
 
 
@@ -84,36 +80,33 @@ void AllStates::PrintOut(char input[], char alpha[])
 // Pre- Cond: Array of states is full, m_arraySize = m_maxArraySize -1
 // Post-Cond: Array is now able to insert new states
 //////////////////////////////////////////////////////////////////////////
-void AllStates::Grow(int newsize)
-{
-  //check if index is valid
-  State** newBuffer = NULL;
-  int i;
+void AllStates::Grow(int newsize) {
+    //check if index is valid
+    State **newBuffer = NULL;
+    int i;
 
-  newBuffer = new State*[newsize];
+    newBuffer = new State *[newsize];
 
-  if (newBuffer == NULL)
-    {
-      cerr << "Out of memory." << endl;
-      exit(1);
+    if (newBuffer == NULL) {
+        std::cerr << "Out of memory." << std::endl;
+        exit(1);
     }
 
-  //set each pointer to NULL
-  for(i=0;i<newsize;i++)
-    newBuffer[i] = NULL;
+    //set each pointer to NULL
+    for (i = 0; i < newsize; i++)
+        newBuffer[i] = NULL;
 
-  //copy buffer contents into newBuffer
-  for (i=0;i <= m_arraySize;i++)
-    {   
-      newBuffer[i] = m_StateArray[i];
+    //copy buffer contents into newBuffer
+    for (i = 0; i <= m_arraySize; i++) {
+        newBuffer[i] = m_StateArray[i];
     }
 
-  delete [] m_StateArray;
-  m_StateArray = NULL;
+    delete[] m_StateArray;
+    m_StateArray = NULL;
 
-  //point the array buffer at the newly created buffer
-  m_StateArray = newBuffer;
-  m_maxArraySize = newsize;
+    //point the array buffer at the newly created buffer
+    m_StateArray = newBuffer;
+    m_maxArraySize = newsize;
 }
 
 
@@ -128,9 +121,8 @@ void AllStates::Grow(int newsize)
 // Post-Cond: string has been added to new state, new state added to array
 //            array size increased by one
 ///////////////////////////////////////////////////////////////////////////
-void AllStates::Insert(ArrayElem* elem, State* state)    
-{
-  state->Insert(elem, m_table);
+void AllStates::Insert(ArrayElem *elem, State *state) {
+    state->Insert(elem, m_table);
 }
 
 
@@ -146,25 +138,21 @@ void AllStates::Insert(ArrayElem* elem, State* state)
 // Post-Cond: string has been added to new state, new state added to array
 //            array size increased by one
 ///////////////////////////////////////////////////////////////////////////
-void AllStates::Insert(ArrayElem* elem, int index)    
-{
-  //to add a new state
-  if(index == m_arraySize)
-    {
-      if(Is_Full())
-	{
-	  Grow(m_maxArraySize + INCREMENT );
-	}
-    
-      State* temp = new State(m_distSize, m_arraySize);
-      m_StateArray[m_arraySize] = temp;
-      m_StateArray[m_arraySize]->Insert(elem, m_table);
-      m_arraySize++;
+void AllStates::Insert(ArrayElem *elem, int index) {
+    //to add a new state
+    if (index == m_arraySize) {
+        if (Is_Full()) {
+            Grow(m_maxArraySize + INCREMENT);
+        }
+
+        State *temp = new State(m_distSize, m_arraySize);
+        m_StateArray[m_arraySize] = temp;
+        m_StateArray[m_arraySize]->Insert(elem, m_table);
+        m_arraySize++;
     }
-  //otherwise add a string to an existing state
-  else
-    {
-      m_StateArray[index]->Insert(elem, m_table);
+        //otherwise add a string to an existing state
+    else {
+        m_StateArray[index]->Insert(elem, m_table);
     }
 }
 
@@ -181,24 +169,20 @@ void AllStates::Insert(ArrayElem* elem, int index)
 // Post-Cond: string has been added to new state, new state added to array
 //            array size increased by one
 ///////////////////////////////////////////////////////////////////////////
-void AllStates::Insert(StringElem* elem, int index)    
-{
-  //to add a new state
-  if(index == m_arraySize)
-    {
-      if(Is_Full())
-	{
-	  Grow(m_maxArraySize + INCREMENT );
-	}
-      State* temp = new State(m_distSize, m_arraySize);
-      m_StateArray[m_arraySize] = temp;
-      m_StateArray[m_arraySize]->Insert(elem, m_table);
-      m_arraySize++;
+void AllStates::Insert(StringElem *elem, int index) {
+    //to add a new state
+    if (index == m_arraySize) {
+        if (Is_Full()) {
+            Grow(m_maxArraySize + INCREMENT);
+        }
+        State *temp = new State(m_distSize, m_arraySize);
+        m_StateArray[m_arraySize] = temp;
+        m_StateArray[m_arraySize]->Insert(elem, m_table);
+        m_arraySize++;
     }
-  //otherwise add a string to an existing state
-  else
-    {
-      m_StateArray[index]->Insert(elem, m_table);
+        //otherwise add a string to an existing state
+    else {
+        m_StateArray[index]->Insert(elem, m_table);
     }
 }
 
@@ -214,62 +198,58 @@ void AllStates::Insert(StringElem* elem, int index)
 // Post-Cond: State has array of probabilities of occurence for each 
 //            element in the alphabet given new string            
 //////////////////////////////////////////////////////////////////////////
-void AllStates::CalcNewDist(int length, ParseTree& parsetree)
-{
-  G_Array g_array;
-  double* newDist = new double[m_distSize];
-  int stringCount;
-  bool match;
-  State* removalState;
-  char* removalString;
-  ArrayElem** list;
-  int listSize;
+void AllStates::CalcNewDist(int length, ParseTree &parsetree) {
+    G_Array g_array;
+    double *newDist = new double[m_distSize];
+    int stringCount;
+    bool match;
+    State *removalState;
+    char *removalString;
+    ArrayElem **list;
+    int listSize;
 
-  //get list containing all strings of proper length 
-  parsetree.FindStrings(length, &g_array);
-  list = g_array.getList();
-  listSize = g_array.getSize();
+    //get list containing all strings of proper length
+    parsetree.FindStrings(length, &g_array);
+    list = g_array.getList();
+    listSize = g_array.getSize();
 
-  //for all of the strings
-  for(int i =0; i < listSize; i++)
-    {
-      match = false;
-      stringCount = 0;
+    //for all of the strings
+    for (int i = 0; i < listSize; i++) {
+        match = false;
+        stringCount = 0;
 
-      //calculate new distribution
-      for(int k =0; k < m_distSize; k++)
-	{
-	  newDist[k] = (double)((list[i]->getCounts())[k]);
-	  stringCount+=(list[i]->getCounts())[k];
-	}
+        //calculate new distribution
+        for (int k = 0; k < m_distSize; k++) {
+            newDist[k] = (double) ((list[i]->getCounts())[k]);
+            stringCount += (list[i]->getCounts())[k];
+        }
 
-      //divide by total string occurences
-      for(int j =0; j < m_distSize; j++)
-	newDist[j] = newDist[j]/(double)stringCount;
+        //divide by total string occurences
+        for (int j = 0; j < m_distSize; j++)
+            newDist[j] = newDist[j] / (double) stringCount;
 
-      //check whether new distribution matches that of parent state
-      match =  CompareToParent(removalString, removalState, list[i],
-			       newDist, length, match, stringCount);
+        //check whether new distribution matches that of parent state
+        match = CompareToParent(removalString, removalState, list[i],
+                                newDist, length, match, stringCount);
 
-      //check whether new distribution matches that of another existing state
-      match = RePartition(match, removalString, removalState, list[i], newDist,
-			  stringCount);
+        //check whether new distribution matches that of another existing state
+        match = RePartition(match, removalString, removalState, list[i], newDist,
+                            stringCount);
 
-      //if there were no matches make new state
-      if(match == false)
-      	{
-	  //insert new string
-	  Insert(list[i], m_arraySize);
+        //if there were no matches make new state
+        if (match == false) {
+            //insert new string
+            Insert(list[i], m_arraySize);
 
-	  //calculate probability distribution
-	  m_StateArray[m_arraySize - 1]->CalcCurrentDist();
+            //calculate probability distribution
+            m_StateArray[m_arraySize - 1]->CalcCurrentDist();
 
-	  //remove ancestor-strings when progeny 
-	  //creates new state
-	  RemoveAncestors(removalString, removalState);
-       	}
+            //remove ancestor-strings when progeny
+            //creates new state
+            RemoveAncestors(removalString, removalState);
+        }
     }
-  delete[] newDist;
+    delete[] newDist;
 }
 
 
@@ -286,31 +266,28 @@ void AllStates::CalcNewDist(int length, ParseTree& parsetree)
 // Post-Cond: ancestors of string are removed from state; if state is left
 //            empty it is then deleted.           
 //////////////////////////////////////////////////////////////////////////
-void AllStates::RemoveAncestors(char*& removalString, State*& removalState)
-{
-  int removalLength;
+void AllStates::RemoveAncestors(char *&removalString, State *&removalState) {
+    int removalLength;
 
-  if(removalState!= NULL)
-    {
-      if(removalString)
-	removalLength = strlen(removalString);
-      else
-	removalLength = 0;
+    if (removalState != NULL) {
+        if (removalString)
+            removalLength = strlen(removalString);
+        else
+            removalLength = 0;
 
-      while(removalState!=NULL && removalLength > 0)
-	{
-	  //remove ancestor-string
-	  m_table->RemoveString(removalString);
-	  //if state is empty remove it
-	  if(!removalState->getStringList())
-	    RemoveState(removalState->getNumber());
-	  else
-	    //re-caculate ancestor-state's distribution
-	    removalState->CalcCurrentDist();
-	  removalString++;
-	  removalState = m_table->WhichState(removalString);
-	  removalLength--;
-	}
+        while (removalState != NULL && removalLength > 0) {
+            //remove ancestor-string
+            m_table->RemoveString(removalString);
+            //if state is empty remove it
+            if (!removalState->getStringList())
+                RemoveState(removalState->getNumber());
+            else
+                //re-caculate ancestor-state's distribution
+                removalState->CalcCurrentDist();
+            removalString++;
+            removalState = m_table->WhichState(removalString);
+            removalLength--;
+        }
     }
 }
 
@@ -330,35 +307,32 @@ void AllStates::RemoveAncestors(char*& removalString, State*& removalState)
 // Post-Cond: history has been added to parent state if it matched, boolean
 //            has been set
 //////////////////////////////////////////////////////////////////////////
-bool AllStates::CompareToParent(char*& removalString, State*& removalState,
-				ArrayElem* element, double* newDist,
-				int length, bool match, int stringCount)
-{
-  double sigLevel;
+bool AllStates::CompareToParent(char *&removalString, State *&removalState,
+                                ArrayElem *element, double *newDist,
+                                int length, bool match, int stringCount) {
+    double sigLevel;
 
-  //Compare new distributions to parent State first
-  removalString = element->getString();
+    //Compare new distributions to parent State first
+    removalString = element->getString();
 
-  if(length > 1)
-    (removalString)++;
-  else
-    (removalString) = "NULL";
-		   
-  (removalState) = m_table->WhichState(removalString);
-  if(removalState != NULL)
-    {
-      sigLevel = Compare(removalState,newDist,stringCount);
-      //if not significantly different from parent state
-      if(sigLevel >= m_sigLevel)
-	{
-	  match = true;
-	  //add new string to state
-	  Insert(element, removalState);
-	  //re-calculate probability distribution
-	  (removalState)->CalcCurrentDist();
-	}
+    if (length > 1)
+        (removalString)++;
+    else
+        (removalString) = "NULL";
+
+    (removalState) = m_table->WhichState(removalString);
+    if (removalState != NULL) {
+        sigLevel = Compare(removalState, newDist, stringCount);
+        //if not significantly different from parent state
+        if (sigLevel >= m_sigLevel) {
+            match = true;
+            //add new string to state
+            Insert(element, removalState);
+            //re-calculate probability distribution
+            (removalState)->CalcCurrentDist();
+        }
     }
-  return match;
+    return match;
 }
 
 
@@ -377,28 +351,25 @@ bool AllStates::CompareToParent(char*& removalString, State*& removalState,
 // Post-Cond: history has been added to non-parent state if it matched, boolean
 //            has been set
 //////////////////////////////////////////////////////////////////////////
-bool AllStates::RePartition(bool match, char* removalString,
-			    State* removalState, ArrayElem* element,
-			    double* newDist, int stringCount)
-{
-  double sigLevel;
+bool AllStates::RePartition(bool match, char *removalString,
+                            State *removalState, ArrayElem *element,
+                            double *newDist, int stringCount) {
+    double sigLevel;
 
-  //compare new distribution to all other states
-  for(int q =0; q < m_arraySize && match == false;q++)
-    {
-      //test distribution against that of current state
-      sigLevel = Compare(q,newDist,stringCount);
-      //if not significantly different from state,
-      //add to that state
-      if(sigLevel >= m_sigLevel)
-	{
-	  match = true;
-	  Insert(element, q);
-	  //re-calculate probability distribution
-	  m_StateArray[q]->CalcCurrentDist();
-	}
+    //compare new distribution to all other states
+    for (int q = 0; q < m_arraySize && match == false; q++) {
+        //test distribution against that of current state
+        sigLevel = Compare(q, newDist, stringCount);
+        //if not significantly different from state,
+        //add to that state
+        if (sigLevel >= m_sigLevel) {
+            match = true;
+            Insert(element, q);
+            //re-calculate probability distribution
+            m_StateArray[q]->CalcCurrentDist();
+        }
     }
-  return match;
+    return match;
 }
 
 
@@ -412,65 +383,61 @@ bool AllStates::RePartition(bool match, char* removalString,
 // Pre- Cond: states have been created based on pasts of maximum length
 // Post-Cond: States all have consistent transitions for a given symbol   
 ///////////////////////////////////////////////////////////////////////////
-void AllStates::Determinize(ParseTree& parsetree)
-{
-  StringElem** stringArray = NULL;
-  int** stateArray = new int*[m_distSize];
-  int arraySize;
-  bool isDeterministic; //variable to check whether states are not created
-  int maxLength = parsetree.getMaxLength();
-  bool firstPass = true;
-  bool isStatesRemoved;
+void AllStates::Determinize(ParseTree &parsetree) {
+    StringElem **stringArray = NULL;
+    int **stateArray = new int *[m_distSize];
+    int arraySize;
+    bool isDeterministic; //variable to check whether states are not created
+    int maxLength = parsetree.getMaxLength();
+    bool firstPass = true;
+    bool isStatesRemoved;
 
-  for(int q = 0; q < m_distSize; q++)
-    stateArray[q] = NULL;
+    for (int q = 0; q < m_distSize; q++)
+        stateArray[q] = NULL;
 
-  do {
-    //no states created yet
-    isDeterministic = true;
+    do {
+        //no states created yet
+        isDeterministic = true;
 
-    //no states deleted due to only long strings yet
-    isStatesRemoved = false;
+        //no states deleted due to only long strings yet
+        isStatesRemoved = false;
 
-    //for each state
-    for(int i = 0; i < m_arraySize; i++)
-      {
-	//make 2-D array of state values and 1-D array of 
-	//string values
-	arraySize = m_StateArray[i]->getListSize();
-	if(arraySize > 0)
-	  {
-	    //allocate and initialize arrays
-	    AllocateArray(stateArray, arraySize);
-	    stringArray = new StringElem*[arraySize];
-	    for(int k = 0; k < arraySize; k++)
-	      stringArray[k] = NULL;
+        //for each state
+        for (int i = 0; i < m_arraySize; i++) {
+            //make 2-D array of state values and 1-D array of
+            //string values
+            arraySize = m_StateArray[i]->getListSize();
+            if (arraySize > 0) {
+                //allocate and initialize arrays
+                AllocateArray(stateArray, arraySize);
+                stringArray = new StringElem *[arraySize];
+                for (int k = 0; k < arraySize; k++)
+                    stringArray[k] = NULL;
 
-	    //fill arrays with transition information
-	    CreateChildStateArray
-	      (parsetree,arraySize,stateArray,stringArray,i);
+                //fill arrays with transition information
+                CreateChildStateArray
+                        (parsetree, arraySize, stateArray, stringArray, i);
 
-	    //check for non-determinism
-	    //and create new states to make deterministic
-	    isDeterministic = MakeNewDetStates(i, stringArray, 
-					       stateArray, arraySize, 
-					       isDeterministic, parsetree);
-	     
-	    //deallocate arrays
-	    for(int j = 0; j < arraySize; j++)
-	      {
-		delete stringArray[j];
-		stringArray[j] = NULL;
-	      }
-	    delete[] stringArray;
-	    stringArray = NULL;
-	    DeAllocateArray(stateArray);
-	  }
-      }
-  } while (isDeterministic == false || isStatesRemoved == true);
+                //check for non-determinism
+                //and create new states to make deterministic
+                isDeterministic = MakeNewDetStates(i, stringArray,
+                                                   stateArray, arraySize,
+                                                   isDeterministic, parsetree);
 
-  delete[] stateArray;
-  stateArray = NULL;
+                //deallocate arrays
+                for (int j = 0; j < arraySize; j++) {
+                    delete stringArray[j];
+                    stringArray[j] = NULL;
+                }
+                delete[] stringArray;
+                stringArray = NULL;
+                DeAllocateArray(stateArray);
+            }
+        }
+    } while (isDeterministic == false || isStatesRemoved == true);
+
+    delete[] stateArray;
+    stateArray = NULL;
 }
 
 
@@ -486,80 +453,74 @@ void AllStates::Determinize(ParseTree& parsetree)
 //            components
 // Post-Cond: State has been passed through at least once for determinization
 //////////////////////////////////////////////////////////////////////////
-bool AllStates::MakeNewDetStates(int stateIndex, StringElem** stringArray, 
-				 int** stateArray, int stringMax, 
-				 bool isDeterministic, ParseTree& parsetree)
-{
-  bool isFirstPass = true;
-  StringElem* temp = NULL;
-  int childState = 0;
-  int tempSize = 0;
-  bool isIncreased = false;   //variable to check whether 
-  //more states have been created
-  bool isNewTransitions = false;
+bool AllStates::MakeNewDetStates(int stateIndex, StringElem **stringArray,
+                                 int **stateArray, int stringMax,
+                                 bool isDeterministic, ParseTree &parsetree) {
+    bool isFirstPass = true;
+    StringElem *temp = NULL;
+    int childState = 0;
+    int tempSize = 0;
+    bool isIncreased = false;   //variable to check whether
+    //more states have been created
+    bool isNewTransitions = false;
 
-  //leave those with first non-NULL state value
-  //in present state, then
-  //make all other necessary states
-  //now that arrays are complete,
-  //determine common transition states
-  for(int alphaIndex = 0; alphaIndex < m_distSize; alphaIndex++)
-    {
-      isFirstPass = true;
-      tempSize = m_arraySize;
-      isIncreased = false; 
-      isNewTransitions = false;
+    //leave those with first non-NULL state value
+    //in present state, then
+    //make all other necessary states
+    //now that arrays are complete,
+    //determine common transition states
+    for (int alphaIndex = 0; alphaIndex < m_distSize; alphaIndex++) {
+        isFirstPass = true;
+        tempSize = m_arraySize;
+        isIncreased = false;
+        isNewTransitions = false;
 
-      do{
-	isNewTransitions = false;
-	isFirstPass = true;
+        do {
+            isNewTransitions = false;
+            isFirstPass = true;
 
-	for(int q = 0; (q < stringMax)&& isNewTransitions == false; q++)
-	  {
-	    //for a state which has a transition,
-	    if(stateArray[alphaIndex][q] != NULL_STATE)
-	      {
-		childState = stateArray[alphaIndex][q];
-		stateArray[alphaIndex][q] = NULL_STATE;
+            for (int q = 0; (q < stringMax) && isNewTransitions == false; q++) {
+                //for a state which has a transition,
+                if (stateArray[alphaIndex][q] != NULL_STATE) {
+                    childState = stateArray[alphaIndex][q];
+                    stateArray[alphaIndex][q] = NULL_STATE;
 
-		//after first time through, create new
-		//states for those strings with differing transitions
-		if(isFirstPass == false)
-		  {
-		    isIncreased = true;
-		    isDeterministic = false;
-		    temp = new StringElem(*stringArray[q]);
-		    m_table->RemoveString(stringArray[q]->m_string);
-		    Insert(temp, tempSize);
-		    delete temp;
-		  }
+                    //after first time through, create new
+                    //states for those strings with differing transitions
+                    if (isFirstPass == false) {
+                        isIncreased = true;
+                        isDeterministic = false;
+                        temp = new StringElem(*stringArray[q]);
+                        m_table->RemoveString(stringArray[q]->m_string);
+                        Insert(temp, tempSize);
+                        delete temp;
+                    }
 
-		FindSimilarTransitions(stringArray, stateArray, childState,
-				       tempSize, alphaIndex, q, stringMax,
-				       isFirstPass);
+                    FindSimilarTransitions(stringArray, stateArray, childState,
+                                           tempSize, alphaIndex, q, stringMax,
+                                           isFirstPass);
 
-		//if another state has been created,
-		// recalculate distributions
-		if(isIncreased == true)
-		  {
-		    //fill arrays 
-		    isNewTransitions = true;
-		    stringMax = m_StateArray[stateIndex]->getListSize();
-		    CreateChildStateArray(parsetree,stringMax,stateArray,
-					  stringArray,stateIndex);
+                    //if another state has been created,
+                    // recalculate distributions
+                    if (isIncreased == true) {
+                        //fill arrays
+                        isNewTransitions = true;
+                        stringMax = m_StateArray[stateIndex]->getListSize();
+                        CreateChildStateArray(parsetree, stringMax, stateArray,
+                                              stringArray, stateIndex);
 
-		    m_StateArray[tempSize]->CalcCurrentDist();
-		    m_StateArray[stateIndex]->CalcCurrentDist();
-		    tempSize++;
-		    isIncreased = false;
-		  }
-		if(isFirstPass)
-		  isFirstPass = false;
-	      }
-	  }
-      } while (isNewTransitions == true);
+                        m_StateArray[tempSize]->CalcCurrentDist();
+                        m_StateArray[stateIndex]->CalcCurrentDist();
+                        tempSize++;
+                        isIncreased = false;
+                    }
+                    if (isFirstPass)
+                        isFirstPass = false;
+                }
+            }
+        } while (isNewTransitions == true);
     }
-  return isDeterministic;
+    return isDeterministic;
 }
 
 
@@ -580,27 +541,23 @@ bool AllStates::MakeNewDetStates(int stateIndex, StringElem** stringArray,
 // Post-Cond: Given hisoty's transition has been matched to all similar
 //            transitions      
 //////////////////////////////////////////////////////////////////////////
-void AllStates::FindSimilarTransitions(StringElem** stringArray,
-				       int** stateArray, int childState,
-				       int tempSize, int alphaIndex,
-				       int stringIndex, int stringMax,
-				       bool isFirstPass)
-{
-  StringElem* temp = NULL;
+void AllStates::FindSimilarTransitions(StringElem **stringArray,
+                                       int **stateArray, int childState,
+                                       int tempSize, int alphaIndex,
+                                       int stringIndex, int stringMax,
+                                       bool isFirstPass) {
+    StringElem *temp = NULL;
 
-  for( int k = stringIndex+1; k < stringMax; k++)
-    {
-      if(stateArray[alphaIndex][k] == childState)
-	{
-	  stateArray[alphaIndex][k] = NULL_STATE;
-	  if(!isFirstPass)
-	    {
-	      temp = new StringElem(*stringArray[k]);
-	      m_table->RemoveString(stringArray[k]->m_string);
-	      Insert(temp, tempSize);
-	      delete temp;
-	    }
-	}
+    for (int k = stringIndex + 1; k < stringMax; k++) {
+        if (stateArray[alphaIndex][k] == childState) {
+            stateArray[alphaIndex][k] = NULL_STATE;
+            if (!isFirstPass) {
+                temp = new StringElem(*stringArray[k]);
+                m_table->RemoveString(stringArray[k]->m_string);
+                Insert(temp, tempSize);
+                delete temp;
+            }
+        }
     }
 }
 
@@ -614,48 +571,41 @@ void AllStates::FindSimilarTransitions(StringElem** stringArray,
 // Pre- Cond: States are set
 // Post-Cond: no histories of max length remain        
 ///////////////////////////////////////////////////////////////////////////
-bool AllStates::DestroyLongHists(int maxLength, ParseTree& parsetree)
-{
-  StringElem* longHist;
-  StringElem* deadHist;
-  bool isStatesRemoved = false;
+bool AllStates::DestroyLongHists(int maxLength, ParseTree &parsetree) {
+    StringElem *longHist;
+    StringElem *deadHist;
+    bool isStatesRemoved = false;
 
-  //Check whether the shortest shistory in the state is
-  //one less than the max, and set transitions here if so
-  for(int i = 0; i < m_arraySize; i++)
-    {
-      longHist = m_StateArray[i]->getStringList();
-      if(strlen(longHist->m_string) == maxLength - 1)
-	FindNSetTransitions(i, maxLength, parsetree.getAlpha());
+    //Check whether the shortest shistory in the state is
+    //one less than the max, and set transitions here if so
+    for (int i = 0; i < m_arraySize; i++) {
+        longHist = m_StateArray[i]->getStringList();
+        if (strlen(longHist->m_string) == maxLength - 1)
+            FindNSetTransitions(i, maxLength, parsetree.getAlpha());
     }
 
-  //for all states in array of states
-  for(int j = 0; j < m_arraySize; j++)
-    {
-      longHist = m_StateArray[j]->getStringList();
-      while((longHist) && (strlen(longHist->m_string) < maxLength))
-	{
-	  longHist = longHist->m_nextPtr;
-	}
+    //for all states in array of states
+    for (int j = 0; j < m_arraySize; j++) {
+        longHist = m_StateArray[j]->getStringList();
+        while ((longHist) && (strlen(longHist->m_string) < maxLength)) {
+            longHist = longHist->m_nextPtr;
+        }
 
-      while(longHist)
-	{
-	  deadHist = longHist;
-	  longHist = longHist->m_nextPtr;
-	  m_table->RemoveString(deadHist->m_string);
-	}
+        while (longHist) {
+            deadHist = longHist;
+            longHist = longHist->m_nextPtr;
+            m_table->RemoveString(deadHist->m_string);
+        }
     }
-  //Remove any states which are now empty
-  //due to max length history removal
-  for(int k = 0; k < m_arraySize; k++)
-    {
-      if(!m_StateArray[k]->getStringList())
-	{
-	  RemoveState(k);
-	  isStatesRemoved = true;
-	}
+    //Remove any states which are now empty
+    //due to max length history removal
+    for (int k = 0; k < m_arraySize; k++) {
+        if (!m_StateArray[k]->getStringList()) {
+            RemoveState(k);
+            isStatesRemoved = true;
+        }
     }
-  return isStatesRemoved;
+    return isStatesRemoved;
 }
 
 
@@ -668,44 +618,38 @@ bool AllStates::DestroyLongHists(int maxLength, ParseTree& parsetree)
 // Pre- Cond: States are set
 // Post-Cond: no histories of less than max length - 1 remain        
 ///////////////////////////////////////////////////////////////////////////
-bool AllStates::DestroyShortHists(int maxLength, ParseTree& parsetree)
-{
-  StringElem* shortHist;
-  StringElem* deadHist;
-  bool isStatesRemoved = false;
+bool AllStates::DestroyShortHists(int maxLength, ParseTree &parsetree) {
+    StringElem *shortHist;
+    StringElem *deadHist;
+    bool isStatesRemoved = false;
 
-  //for all states in array of states
-  for(int j = 0; j < m_arraySize; j++)
-    {
-      //check for 'NULL' string
-      shortHist = m_StateArray[j]->getStringList();  
-      if(strcmp(shortHist->m_string, "NULL") == 0)
-	{
-	  deadHist = shortHist;
-	  shortHist = shortHist->m_nextPtr;
-	  m_table->RemoveString(deadHist->m_string);
-	}
-      //check for histories which are too short
-      while((shortHist) && (strlen(shortHist->m_string) < maxLength - 1))
-	{
-	  deadHist = shortHist;
-	  shortHist = shortHist->m_nextPtr;
-	  m_table->RemoveString(deadHist->m_string);
-			
-	}
+    //for all states in array of states
+    for (int j = 0; j < m_arraySize; j++) {
+        //check for 'NULL' string
+        shortHist = m_StateArray[j]->getStringList();
+        if (strcmp(shortHist->m_string, "NULL") == 0) {
+            deadHist = shortHist;
+            shortHist = shortHist->m_nextPtr;
+            m_table->RemoveString(deadHist->m_string);
+        }
+        //check for histories which are too short
+        while ((shortHist) && (strlen(shortHist->m_string) < maxLength - 1)) {
+            deadHist = shortHist;
+            shortHist = shortHist->m_nextPtr;
+            m_table->RemoveString(deadHist->m_string);
+
+        }
     }
 
-  //Remove any states which are now empty
-  //due to history removal
-  for(int k = 0; k < m_arraySize; k++)
-    {
-      if(!m_StateArray[k]->getStringList())
-	{
-	  RemoveState(k);
-	  isStatesRemoved = true;
-	}
+    //Remove any states which are now empty
+    //due to history removal
+    for (int k = 0; k < m_arraySize; k++) {
+        if (!m_StateArray[k]->getStringList()) {
+            RemoveState(k);
+            isStatesRemoved = true;
+        }
     }
-  return isStatesRemoved;
+    return isStatesRemoved;
 }
 
 
@@ -718,11 +662,10 @@ bool AllStates::DestroyShortHists(int maxLength, ParseTree& parsetree)
 // Pre- Cond: memory for state transitions have been allocated
 // Post-Cond: state transition values have been set   
 ///////////////////////////////////////////////////////////////////////////
-void AllStates::StoreTransitions(int maxLength, char* alpha)	
-{
-  //for each state
-  for(int i = 0; i < m_arraySize; i++)
-    FindNSetTransitions(i, maxLength, alpha);
+void AllStates::StoreTransitions(int maxLength, char *alpha) {
+    //for each state
+    for (int i = 0; i < m_arraySize; i++)
+        FindNSetTransitions(i, maxLength, alpha);
 }
 
 
@@ -735,74 +678,68 @@ void AllStates::StoreTransitions(int maxLength, char* alpha)
 // Pre- Cond: States have been set and determinized
 // Post-Cond: State has a transition for each symbol     
 //////////////////////////////////////////////////////////////////////////
-void AllStates::FindNSetTransitions(int state, int maxLength, char* alpha)
-{
-  int shortestLength;
-  StringElem* temp;
-  int  length; 
-  char*  childString; 
-  char* symbol = new char[2];
-  bool isNull;
-  int childState;
-  bool isTooLong;
+void AllStates::FindNSetTransitions(int state, int maxLength, char *alpha) {
+    int shortestLength;
+    StringElem *temp;
+    int length;
+    char *childString;
+    char *symbol = new char[2];
+    bool isNull;
+    int childState;
+    bool isTooLong;
 
-  symbol[1] = '\0';
-  temp = m_StateArray[state]->getStringList();
+    symbol[1] = '\0';
+    temp = m_StateArray[state]->getStringList();
 
-  shortestLength = strlen(temp->m_string) + 2;
+    shortestLength = strlen(temp->m_string) + 2;
 
-  for(int k = 0; k < m_distSize; k++)
-    {
-      isTooLong = false;
-      isNull = true;
-      temp = m_StateArray[state]->getStringList();
+    for (int k = 0; k < m_distSize; k++) {
+        isTooLong = false;
+        isNull = true;
+        temp = m_StateArray[state]->getStringList();
 
-      while( isNull == true && temp && isTooLong == false)
-	{
-	  length = strlen(temp->m_string) + 2;
-	  childString = new char[length];
-	  strcpy(childString, temp->m_string);
+        while (isNull == true && temp && isTooLong == false) {
+            length = strlen(temp->m_string) + 2;
+            childString = new char[length];
+            strcpy(childString, temp->m_string);
 
-	  //if string exceeds max length allowed
-	  if((length ==  maxLength + 2) && 
-	     (shortestLength < (maxLength + 2)))
-	    {
-	      childState = NULL_STATE;
-	      isTooLong = true;
-	    }
-	  if(length > maxLength + 1)
-	    childString++;
-	  symbol[0] = alpha[k];
+            //if string exceeds max length allowed
+            if ((length == maxLength + 2) &&
+                (shortestLength < (maxLength + 2))) {
+                childState = NULL_STATE;
+                isTooLong = true;
+            }
+            if (length > maxLength + 1)
+                childString++;
+            symbol[0] = alpha[k];
 
-	  //create child string
-	  strcat(childString, symbol);
+            //create child string
+            strcat(childString, symbol);
 
-	  //determine state of child string
-	  childState = m_table->WhichStateNumber(childString);
-	  if(childState != NULL_STATE)
-	    {
-	      m_StateArray[state]->setTransitions
-		(k, childState);
+            //determine state of child string
+            childState = m_table->WhichStateNumber(childString);
+            if (childState != NULL_STATE) {
+                m_StateArray[state]->setTransitions
+                        (k, childState);
 
-	      isNull = false;
-	    }
+                isNull = false;
+            }
 
-	  if(isNull == true && temp)
-	    temp = temp->m_nextPtr;
+            if (isNull == true && temp)
+                temp = temp->m_nextPtr;
 
-	  if(length > maxLength + 1)
-	    childString--;
+            if (length > maxLength + 1)
+                childString--;
 
-	  delete[] childString;
-	}
+            delete[] childString;
+        }
 
-      //if no valid transitions were found, set to NULL_STATE
-      if(isNull == true || isTooLong == true)
-	{
-	  m_StateArray[state]->setTransitions(k, childState);
-	}
+        //if no valid transitions were found, set to NULL_STATE
+        if (isNull == true || isTooLong == true) {
+            m_StateArray[state]->setTransitions(k, childState);
+        }
     }
-  delete[] symbol;
+    delete[] symbol;
 }
 
 
@@ -815,12 +752,10 @@ void AllStates::FindNSetTransitions(int state, int maxLength, char* alpha)
 // Pre- Cond: memory is allocated for array
 // Post-Cond: memory is free 
 ////////////////////////////////////////////////////////////////////////
-void AllStates::DeAllocateArray(int** stateArray)
-{
-  for(int i = 0; i < m_distSize; i++)
-    {
-      delete[] stateArray[i];
-      stateArray[i] = NULL;
+void AllStates::DeAllocateArray(int **stateArray) {
+    for (int i = 0; i < m_distSize; i++) {
+        delete[] stateArray[i];
+        stateArray[i] = NULL;
     }
 }
 
@@ -834,21 +769,17 @@ void AllStates::DeAllocateArray(int** stateArray)
 // Pre- Cond: memory is allocated for main pointer (1-D array)
 // Post-Cond: memory is allocated for each pointer (2-D array)
 ////////////////////////////////////////////////////////////////////////
-void AllStates::AllocateArray(int** stateArray, int arraySize)
-{   
-  for(int i = 0; i < m_distSize; i++)
-    {
-      stateArray[i] = NULL;
-      stateArray[i] = new int[arraySize];
-      if(stateArray[i] == NULL)
-	{
-	  cerr << "Out of memory\n";
-	  exit(1);
-	}
-      for(int j = 0; j < arraySize;j++)
-	{
-	  stateArray[i][j] = NULL_STATE;
-	}
+void AllStates::AllocateArray(int **stateArray, int arraySize) {
+    for (int i = 0; i < m_distSize; i++) {
+        stateArray[i] = NULL;
+        stateArray[i] = new int[arraySize];
+        if (stateArray[i] == NULL) {
+            std::cerr << "Out of memory\n";
+            exit(1);
+        }
+        for (int j = 0; j < arraySize; j++) {
+            stateArray[i][j] = NULL_STATE;
+        }
     }
 }
 
@@ -862,36 +793,33 @@ void AllStates::AllocateArray(int** stateArray, int arraySize)
 // Pre- Cond: States have been set
 // Post-Cond: All states are recurrent 
 //////////////////////////////////////////////////////////////////////////
-void AllStates::CheckConnComponents(ParseTree& parsetree)
-{
-  char* alpha = parsetree.getAlpha();
-  int stateCounter = 0;
-  int maxLength = parsetree.getMaxLength();
-  bool done = false;
-  int* stateArray = new int[m_arraySize];
-  TransTable* transTable = NULL;
+void AllStates::CheckConnComponents(ParseTree &parsetree) {
+    char *alpha = parsetree.getAlpha();
+    int stateCounter = 0;
+    int maxLength = parsetree.getMaxLength();
+    bool done = false;
+    int *stateArray = new int[m_arraySize];
+    TransTable *transTable = NULL;
 
-  //initialize array
-  for(int i=0; i<m_arraySize;i++)
-    stateArray[i] = NULL_STATE;
-  
-  //keep doing until number of states stabilizes
-  while (done == false)
-    {
-      transTable = new TransTable(m_arraySize);
-      done = true;
-      if(m_arraySize > 1)
-	{
-	  //for all states
-	  for(int index = 0; index < m_arraySize; index++)
-	    FillRecurrStateArray(alpha, maxLength, index, stateArray,
-				 stateCounter, transTable);
-	  done = RemoveTransientStates(stateArray, done, stateCounter,
-				       transTable, alpha);
-	}
-      delete transTable;
+    //initialize array
+    for (int i = 0; i < m_arraySize; i++)
+        stateArray[i] = NULL_STATE;
+
+    //keep doing until number of states stabilizes
+    while (done == false) {
+        transTable = new TransTable(m_arraySize);
+        done = true;
+        if (m_arraySize > 1) {
+            //for all states
+            for (int index = 0; index < m_arraySize; index++)
+                FillRecurrStateArray(alpha, maxLength, index, stateArray,
+                                     stateCounter, transTable);
+            done = RemoveTransientStates(stateArray, done, stateCounter,
+                                         transTable, alpha);
+        }
+        delete transTable;
     }
-  delete[] stateArray;
+    delete[] stateArray;
 }
 
 
@@ -908,81 +836,74 @@ void AllStates::CheckConnComponents(ParseTree& parsetree)
 // Post-Cond: The array of recurrent state indices has been set for the 
 //            specific state (array of 'childstates' of given state)
 //////////////////////////////////////////////////////////////////////////
-void AllStates::FillRecurrStateArray(char* alpha, int maxLength, int index,
-				     int*& stateArray, int& stateCounter,
-				     TransTable*& transTable)
-{
-  int length;
-  char* childString = NULL;
-  int childState;
-  char* symbol = new char[2]; 
-  bool match = false;
-  StringElem* temp;
+void AllStates::FillRecurrStateArray(char *alpha, int maxLength, int index,
+                                     int *&stateArray, int &stateCounter,
+                                     TransTable *&transTable) {
+    int length;
+    char *childString = NULL;
+    int childState;
+    char *symbol = new char[2];
+    bool match = false;
+    StringElem *temp;
 
-  //use the list of strings for appropriate state
-  temp = m_StateArray[index]->getStringList();
+    //use the list of strings for appropriate state
+    temp = m_StateArray[index]->getStringList();
 
-  while(temp!=NULL)
-    {
-      //get string which is in list
-      length = strlen(temp->m_string);
+    while (temp != NULL) {
+        //get string which is in list
+        length = strlen(temp->m_string);
 
-      //look at transitions of child strings
-      for(int k =0; k < m_distSize; k++)
-	{
-	  childString = new char[length + 2*SYMB_SIZE + END_STRING];
-	  strcpy(childString, temp->m_string);
+        //look at transitions of child strings
+        for (int k = 0; k < m_distSize; k++) {
+            childString = new char[length + 2 * SYMB_SIZE + END_STRING];
+            strcpy(childString, temp->m_string);
 
-	  //wrap string if it exceeds max length
-	  if(length == maxLength)
-	    childString++;
+            //wrap string if it exceeds max length
+            if (length == maxLength)
+                childString++;
 
-	  symbol[0] = alpha[k];
-	  symbol[1] = '\0';
+            symbol[0] = alpha[k];
+            symbol[1] = '\0';
 
-	  //create child string
-	  strcat(childString, symbol);
+            //create child string
+            strcat(childString, symbol);
 
-	  //determine state of child string
-	  childState = m_table->WhichStateNumber(childString);
+            //determine state of child string
+            childState = m_table->WhichStateNumber(childString);
 
-	  //fill array with states to which there are transitions
-	  if(childState != index  && ((length <= maxLength - 1) 
-				      || temp == m_StateArray[index]->getStringList()))
-	    {
-	      //if state is already in array, ignore
-	      for(int q = 0; q < stateCounter;q++)
-		{
-		  if(stateArray[q] == childState)
-		    match = true;
-		}
-				//if null state, ignore
-	      if(childState == NULL_STATE)
-		match = true;
+            //fill array with states to which there are transitions
+            if (childState != index && ((length <= maxLength - 1)
+                                        || temp == m_StateArray[index]->getStringList())) {
+                //if state is already in array, ignore
+                for (int q = 0; q < stateCounter; q++) {
+                    if (stateArray[q] == childState)
+                        match = true;
+                }
+                //if null state, ignore
+                if (childState == NULL_STATE)
+                    match = true;
 
-	      //if not, add that state to the array
-	      if(match == false)
-		{
-		  stateArray[stateCounter] = childState;
-		  stateCounter++;
-		}
-	      match = false;
-	    }
-	  if(length == maxLength)
-	    {
-	      //record transitions from longest strings
-	      transTable->setTrans(childState, temp, index);
-	      childString--;
-	    }
-	  delete[] childString;
-          childString = NULL;
-	}
-      temp = temp->m_nextPtr;	
+                //if not, add that state to the array
+                if (match == false) {
+                    stateArray[stateCounter] = childState;
+                    stateCounter++;
+                }
+                match = false;
+            }
+            if (length == maxLength) {
+                //record transitions from longest strings
+                transTable->setTrans(childState, temp, index);
+                childString--;
+            }
+            delete[] childString;
+            childString = NULL;
+        }
+        temp = temp->m_nextPtr;
     }
-  delete[] symbol;
+    delete[] symbol;
 }
- 
- 
+
+
 ///////////////////////////////////////////////////////////////////////////
 // Function: AllStates::RemoveTransientStates
 // Purpose: removes any transient states
@@ -994,75 +915,68 @@ void AllStates::FillRecurrStateArray(char* alpha, int maxLength, int index,
 // Post-Cond: Transient states have been deleted (though more may have been
 //            created)
 //////////////////////////////////////////////////////////////////////////
-bool AllStates::RemoveTransientStates(int* stateArray, bool done,
-				      int stateCounter, TransTable* transTable,
-				      char* alpha)
-{
-  StringElem* tempString;
-  StringElem* tempString2;
-  int removeAdjust;
-  bool match = false;
-  bool isUnique = false;
-  TransNode* transTemp;
-  int lowest = m_arraySize;
-  
-  removeAdjust = 0; 
+bool AllStates::RemoveTransientStates(int *stateArray, bool done,
+                                      int stateCounter, TransTable *transTable,
+                                      char *alpha) {
+    StringElem *tempString;
+    StringElem *tempString2;
+    int removeAdjust;
+    bool match = false;
+    bool isUnique = false;
+    TransNode *transTemp;
+    int lowest = m_arraySize;
 
-  //remove any states not found
-  for(int z = 0; z < m_arraySize; z++)
-    {
-      match = false;
-      for(int x = 0; x < stateCounter && match == false; x++)
-	{
-	  if(stateArray[x] == z)
-	    match = true;
-	}  
-      if(match == false)
-	{
-		  
-	  //check longest histories for uniqueness
-	  //of transitions, if unique, don't delete
-	  transTemp = transTable->WhichStrings(z - removeAdjust);
-	  while(transTemp && isUnique == false)
-	    {
-	      //go to state of transitioning, max length history
-	      //and check it against other histories
-	      isUnique = CheckUniqueTrans(transTemp->stringPtr,
-					  z - removeAdjust,
-					  transTemp->state -removeAdjust,
-					  alpha);
-	      transTemp = transTemp->nextPtr;
-	    }
-	
-	  //remove state only if state doesn't have a max length history
-	  //with unique characteristics transitiioning to it
-	  if(isUnique == false)
-	    {
-	      //reset transition table
-	      transTable->RemoveStringsAndState(z - removeAdjust, removeAdjust,
-						lowest);
-	      //remove strings in state
-	      tempString = m_StateArray[z - removeAdjust]->
-		getStringList();
-	      while(tempString)
-		{
-		  tempString2 = tempString;
-		  tempString = tempString->m_nextPtr;
-		  m_table->RemoveString
-		    (tempString2->m_string);
-		}
-	      //remove state itself 
-	      //(also removes from hash table)
-	      RemoveState(z - removeAdjust);
-	      if(removeAdjust == 0)
-		lowest = z;
-	      //restructure the state numbers after removal
-	      removeAdjust++;
-	      done = false;
-	    }
-	}
+    removeAdjust = 0;
+
+    //remove any states not found
+    for (int z = 0; z < m_arraySize; z++) {
+        match = false;
+        for (int x = 0; x < stateCounter && match == false; x++) {
+            if (stateArray[x] == z)
+                match = true;
+        }
+        if (match == false) {
+
+            //check longest histories for uniqueness
+            //of transitions, if unique, don't delete
+            transTemp = transTable->WhichStrings(z - removeAdjust);
+            while (transTemp && isUnique == false) {
+                //go to state of transitioning, max length history
+                //and check it against other histories
+                isUnique = CheckUniqueTrans(transTemp->stringPtr,
+                                            z - removeAdjust,
+                                            transTemp->state - removeAdjust,
+                                            alpha);
+                transTemp = transTemp->nextPtr;
+            }
+
+            //remove state only if state doesn't have a max length history
+            //with unique characteristics transitiioning to it
+            if (isUnique == false) {
+                //reset transition table
+                transTable->RemoveStringsAndState(z - removeAdjust, removeAdjust,
+                                                  lowest);
+                //remove strings in state
+                tempString = m_StateArray[z - removeAdjust]->
+                        getStringList();
+                while (tempString) {
+                    tempString2 = tempString;
+                    tempString = tempString->m_nextPtr;
+                    m_table->RemoveString
+                            (tempString2->m_string);
+                }
+                //remove state itself
+                //(also removes from hash table)
+                RemoveState(z - removeAdjust);
+                if (removeAdjust == 0)
+                    lowest = z;
+                //restructure the state numbers after removal
+                removeAdjust++;
+                done = false;
+            }
+        }
     }
-  return done;
+    return done;
 }
 
 
@@ -1077,59 +991,56 @@ bool AllStates::RemoveTransientStates(int* stateArray, bool done,
 // Pre- Cond: memory is allocated for arrays
 // Post-Cond: arrays contain valid information
 ///////////////////////////////////////////////////////////////////////////
-void AllStates::CreateChildStateArray(ParseTree& parsetree,int arraySize, 
-				      int** stateArray,
-				      StringElem** stringArray, int index)
-{
-  char* alpha = parsetree.getAlpha();
-  int stringCounter = 0;
-  StringElem*  temp = m_StateArray[index]->getStringList();
-  int length;
-  char* childString = NULL;
-  int childState;
-  char* symbol = new char[2];
-  int maxLength = parsetree.getMaxLength();
-  bool isEmpty = false;
+void AllStates::CreateChildStateArray(ParseTree &parsetree, int arraySize,
+                                      int **stateArray,
+                                      StringElem **stringArray, int index) {
+    char *alpha = parsetree.getAlpha();
+    int stringCounter = 0;
+    StringElem *temp = m_StateArray[index]->getStringList();
+    int length;
+    char *childString = NULL;
+    int childState;
+    char *symbol = new char[2];
+    int maxLength = parsetree.getMaxLength();
+    bool isEmpty = false;
 
-  //fill the arrays for each string
-  while(temp!=NULL)
-    {
-      //get string which is in state
-      length = strlen(temp->m_string);
+    //fill the arrays for each string
+    while (temp != NULL) {
+        //get string which is in state
+        length = strlen(temp->m_string);
 
-      stringArray[stringCounter] = new StringElem(*temp);
+        stringArray[stringCounter] = new StringElem(*temp);
 
-      //look at transitions of child strings
-      for(int k =0; k < m_distSize; k++)
-	{
-	  childString = new char[length + 2*SYMB_SIZE + END_STRING];
-	  strcpy(childString, temp->m_string);
+        //look at transitions of child strings
+        for (int k = 0; k < m_distSize; k++) {
+            childString = new char[length + 2 * SYMB_SIZE + END_STRING];
+            strcpy(childString, temp->m_string);
 
-	  //wrap string if it is maxLength
-	  if(length == maxLength)
-	    childString++;
-	   
-	  symbol[0] = alpha[k];
-	  symbol[1] = '\0';
+            //wrap string if it is maxLength
+            if (length == maxLength)
+                childString++;
 
-	  //create child string
-	  strcat(childString, symbol);
+            symbol[0] = alpha[k];
+            symbol[1] = '\0';
 
-	  //determine state of child string
-	  childState = m_table->WhichStateNumber(childString);
-	  stateArray[k][stringCounter] = childState;
-	  if(length == maxLength)
-	    childString--;
+            //create child string
+            strcat(childString, symbol);
 
-	  delete[] childString;
-	  childString = NULL;
-	}
-      stringCounter++;
-      temp = temp->m_nextPtr;
-      
+            //determine state of child string
+            childState = m_table->WhichStateNumber(childString);
+            stateArray[k][stringCounter] = childState;
+            if (length == maxLength)
+                childString--;
+
+            delete[] childString;
+            childString = NULL;
+        }
+        stringCounter++;
+        temp = temp->m_nextPtr;
+
     }
-  delete[] symbol;
-  return; 
+    delete[] symbol;
+    return;
 }
 
 
@@ -1146,85 +1057,79 @@ void AllStates::CreateChildStateArray(ParseTree& parsetree,int arraySize,
 // Pre- Cond: History which transitions to bad state has been selected.
 // Post-Cond: History is identified as unique
 //////////////////////////////////////////////////////////////////////////
-bool AllStates::CheckUniqueTrans(StringElem* transString, int removalState,
-				 int parentState, char* alpha)
-{
-  bool isUnique = true;
-  bool isMatch = true;
-  int* transList = new int[m_distSize];
-  int tempState = NULL_STATE;
-  int histLength = strlen(transString->m_string);
-  int maxLength = histLength;	
-  char* childHist = NULL;
-  char* childHist2 = NULL;
-  char*  symbol = new char[2];
-  symbol[1] = '\0';
-  StringElem* temp = m_StateArray[parentState]->getStringList();
-  int alphaCounter;
+bool AllStates::CheckUniqueTrans(StringElem *transString, int removalState,
+                                 int parentState, char *alpha) {
+    bool isUnique = true;
+    bool isMatch = true;
+    int *transList = new int[m_distSize];
+    int tempState = NULL_STATE;
+    int histLength = strlen(transString->m_string);
+    int maxLength = histLength;
+    char *childHist = NULL;
+    char *childHist2 = NULL;
+    char *symbol = new char[2];
+    symbol[1] = '\0';
+    StringElem *temp = m_StateArray[parentState]->getStringList();
+    int alphaCounter;
 
-  //check to see what the target history transitions are   
-  for(alphaCounter = 0; alphaCounter < m_distSize; alphaCounter++)
-    {
-      childHist2 = new char[histLength + 2*SYMB_SIZE + END_STRING];
-      strcpy(childHist2, transString->m_string);
-      childHist2++;
-      symbol[0] = alpha[alphaCounter];
-      strcat(childHist2, symbol);
-      tempState = m_table->WhichStateNumber(childHist2);
-      //if state is going to be removed, use wild card
-      if(tempState == removalState)
-	transList[alphaCounter] = NULL_STATE;
-      else
-	transList[alphaCounter] = tempState;
-      childHist2--;
-      delete[] childHist2;
-      childHist2 = NULL;
+    //check to see what the target history transitions are
+    for (alphaCounter = 0; alphaCounter < m_distSize; alphaCounter++) {
+        childHist2 = new char[histLength + 2 * SYMB_SIZE + END_STRING];
+        strcpy(childHist2, transString->m_string);
+        childHist2++;
+        symbol[0] = alpha[alphaCounter];
+        strcat(childHist2, symbol);
+        tempState = m_table->WhichStateNumber(childHist2);
+        //if state is going to be removed, use wild card
+        if (tempState == removalState)
+            transList[alphaCounter] = NULL_STATE;
+        else
+            transList[alphaCounter] = tempState;
+        childHist2--;
+        delete[] childHist2;
+        childHist2 = NULL;
     }
-  //check every other (shorter) history's transitions
-  histLength = strlen(temp->m_string);
-  //if it is a self loop, discount it  
-  if(removalState == parentState)
-    isUnique = false;
-  while(temp && histLength <maxLength && isUnique == true)
-    {
-      //don't check string against self
-      if(strcmp(temp->m_string, transString->m_string) !=0)
-	{
-	  isMatch = true;
-	  alphaCounter = 0;
-	  childHist = new char[histLength + SYMB_SIZE + END_STRING];
-	  strcpy(childHist, temp->m_string);
-	  //check transition for each symbol
-	  while(isMatch == true && alphaCounter < m_distSize)
-	    {
-	      symbol[0] = alpha[alphaCounter];
-	      childHist2 = new char[histLength + SYMB_SIZE + END_STRING];
-	      strcpy(childHist2,childHist);
-	      strcat(childHist2, symbol);
-	      //set boolean if single transition fails to match
-	      if(transList[alphaCounter] != NULL_STATE)
-		{
-		  tempState = m_table->WhichStateNumber(childHist2);
+    //check every other (shorter) history's transitions
+    histLength = strlen(temp->m_string);
+    //if it is a self loop, discount it
+    if (removalState == parentState)
+        isUnique = false;
+    while (temp && histLength < maxLength && isUnique == true) {
+        //don't check string against self
+        if (strcmp(temp->m_string, transString->m_string) != 0) {
+            isMatch = true;
+            alphaCounter = 0;
+            childHist = new char[histLength + SYMB_SIZE + END_STRING];
+            strcpy(childHist, temp->m_string);
+            //check transition for each symbol
+            while (isMatch == true && alphaCounter < m_distSize) {
+                symbol[0] = alpha[alphaCounter];
+                childHist2 = new char[histLength + SYMB_SIZE + END_STRING];
+                strcpy(childHist2, childHist);
+                strcat(childHist2, symbol);
+                //set boolean if single transition fails to match
+                if (transList[alphaCounter] != NULL_STATE) {
+                    tempState = m_table->WhichStateNumber(childHist2);
 
-		  if ( tempState!= transList[alphaCounter]
-		       && tempState != NULL_STATE)
-		    isMatch = false;
-		}
-	      delete[] childHist2;
-	      alphaCounter++;
-	    }
-	  //set boolean if histories are similar
-	  if(isMatch == true)
-	    isUnique = false;
-	  delete[] childHist;
-	  childHist = NULL;
-	}
-      temp = temp->m_nextPtr;
-      histLength = strlen(temp->m_string);
+                    if (tempState != transList[alphaCounter]
+                        && tempState != NULL_STATE)
+                        isMatch = false;
+                }
+                delete[] childHist2;
+                alphaCounter++;
+            }
+            //set boolean if histories are similar
+            if (isMatch == true)
+                isUnique = false;
+            delete[] childHist;
+            childHist = NULL;
+        }
+        temp = temp->m_nextPtr;
+        histLength = strlen(temp->m_string);
     }
-  delete[] transList;
-  delete[] symbol;
-  return isUnique;
+    delete[] transList;
+    delete[] symbol;
+    return isUnique;
 }
 
 
@@ -1239,30 +1144,29 @@ bool AllStates::CheckUniqueTrans(StringElem* transString, int removalState,
 // Post-Cond: All strings of length one have been examined, initial states
 //            have been created  
 //////////////////////////////////////////////////////////////////////////
-void AllStates::InitialFrequencies(ParseTree& parsetree)
-{
-  G_Array g_array;
-  StringElem *temp; 
-  char* charArray = new char[m_distSize];
-  int* intArray = new int[m_distSize];
+void AllStates::InitialFrequencies(ParseTree &parsetree) {
+    G_Array g_array;
+    StringElem *temp;
+    char *charArray = new char[m_distSize];
+    int *intArray = new int[m_distSize];
 
-  //find strings of length one and their distributions
-  int size = parsetree.FindRoots(charArray, intArray);
+    //find strings of length one and their distributions
+    int size = parsetree.FindRoots(charArray, intArray);
 
-  //make first, NULL, state with unconditional 
-  //frequencies for one and zero as string counts
-  temp = new StringElem(m_distSize);
-  temp->m_string = new char[5];
-  strcpy(temp->m_string,"NULL");
-  for(int k = 0; k < m_distSize; k++) 
-    temp->m_counts[k] = intArray[k];
+    //make first, NULL, state with unconditional
+    //frequencies for one and zero as string counts
+    temp = new StringElem(m_distSize);
+    temp->m_string = new char[5];
+    strcpy(temp->m_string, "NULL");
+    for (int k = 0; k < m_distSize; k++)
+        temp->m_counts[k] = intArray[k];
 
-  //add first state to array of states and 
-  //calculate distributions
-  Insert(temp, m_arraySize);
-  m_StateArray[m_arraySize - 1]->CalcCurrentDist();
-  delete temp;
-  return;
+    //add first state to array of states and
+    //calculate distributions
+    Insert(temp, m_arraySize);
+    m_StateArray[m_arraySize - 1]->CalcCurrentDist();
+    delete temp;
+    return;
 }
 
 
@@ -1275,15 +1179,13 @@ void AllStates::InitialFrequencies(ParseTree& parsetree)
 // Pre- Cond: state is empty
 // Post-Cond: state is removed from array, array size is one smaller
 //////////////////////////////////////////////////////////////////////////
-void AllStates::RemoveState(int index)
-{
-  delete m_StateArray[index];
-  for(int i = index; i < m_arraySize - 1; i++)
-    {
-      m_StateArray[i] = m_StateArray[i + 1];
-      m_StateArray[i]->decrementNumber();
+void AllStates::RemoveState(int index) {
+    delete m_StateArray[index];
+    for (int i = index; i < m_arraySize - 1; i++) {
+        m_StateArray[i] = m_StateArray[i + 1];
+        m_StateArray[i]->decrementNumber();
     }
-  m_arraySize--;
+    m_arraySize--;
 }
 
 
@@ -1297,127 +1199,121 @@ void AllStates::RemoveState(int index)
 // Pre- Cond: state transitions have been determined
 // Post-Cond: state distributions have been determined
 //////////////////////////////////////////////////////////////////////////
-void AllStates::GetStateDistsMulti(ParseTree& parsetree, char input[],
-				   HashTable2* hashtable, bool isMulti)
-{
-  char* data = parsetree.getData();
-  int dataLength = strlen(data);
-  int adjustedDataLength = parsetree.getDataSize()  ;
-  // We need to deduct all the data-points where we're synchronizing from the
-  // total, so we get probabilities for states which sum to one
-  int numberLines = parsetree.getNumLines();
-  int maxLength = parsetree.getMaxLength();
-  int i = 0;
-  int k = 0;
-  int state = NULL_STATE;
-  int* counts = new int[m_arraySize];
-  char* symbol = new char[2];
-  char* inputFile = new char[strlen(input) + 13 + END_STRING];
-  int diff = 0;
-  char* synchString0 = new char[MAX_STRING + 2 + END_STRING];
+void AllStates::GetStateDistsMulti(ParseTree &parsetree, char input[],
+                                   HashTable2 *hashtable, bool isMulti) {
+    char *data = parsetree.getData();
+    int dataLength = strlen(data);
+    int adjustedDataLength = parsetree.getDataSize();
+    // We need to deduct all the data-points where we're synchronizing from the
+    // total, so we get probabilities for states which sum to one
+    int numberLines = parsetree.getNumLines();
+    int maxLength = parsetree.getMaxLength();
+    int i = 0;
+    int k = 0;
+    int state = NULL_STATE;
+    int *counts = new int[m_arraySize];
+    char *symbol = new char[2];
+    char *inputFile = new char[strlen(input) + 13 + END_STRING];
+    int diff = 0;
+    char *synchString0 = new char[MAX_STRING + 2 + END_STRING];
 
-  //create file streams
-  strcpy(inputFile,input);
-  strcat(inputFile, "_state_series");
-  ofstream outData(inputFile, ios::out);
+    //create file streams
+    strcpy(inputFile, input);
+    strcat(inputFile, "_state_series");
+    std::ofstream outData(inputFile, std::ios::out);
 
-  //open output file, if unsuccessful set boolean return value
-  if(!outData)
-    {
-      cerr << " the state series output file cannot be opened " << endl;
-      exit(1);
+    //open output file, if unsuccessful set boolean return value
+    if (!outData) {
+        std::cerr << " the state series output file cannot be opened " << std::endl;
+        exit(1);
     }
-  //otherwise output data
-  else
-    {
-      //initializations
-      for(int j = 0; j < m_arraySize; j++)
-	counts[j] = 0;
+        //otherwise output data
+    else {
+        //initializations
+        for (int j = 0; j < m_arraySize; j++)
+            counts[j] = 0;
 
-      symbol[1] = '\0';
+        symbol[1] = '\0';
 
-      //initial synchronization
-      state = SynchToStatesMulti(i,k,state, maxLength, &outData, data,
-				 dataLength, synchString0);
+        //initial synchronization
+        state = SynchToStatesMulti(i, k, state, maxLength, &outData, data,
+                                   dataLength, synchString0);
 
-      //Adjust for synch time, check for end of line
-      if (CheckSynchError(i, state, synchString0, parsetree, isMulti, i-1))
-	state = SynchToStatesMulti(i,k,state, maxLength, &outData, data,
-				   dataLength, synchString0);
+        //Adjust for synch time, check for end of line
+        if (CheckSynchError(i, state, synchString0, parsetree, isMulti, i - 1))
+            state = SynchToStatesMulti(i, k, state, maxLength, &outData, data,
+                                       dataLength, synchString0);
 
-      adjustedDataLength -= (i - 1);
-      symbol[0] = data[i];
-      counts[state]++;
-      outData << state << ";";
+        adjustedDataLength -= (i - 1);
+        symbol[0] = data[i];
+        counts[state]++;
+        outData << state << ";";
 
-      //get series of states, and make frequency counts
-      while(i < dataLength)
-	{
-	  //end of line in data, resynchronize
-	  if(data[i] == '\n')
-	    {
-	      i= i + SYSTEM_CONST;
-	      //if the last return was the last character altogether
-	      if(i >= dataLength)
-		break;
-	      k = 0;
-	      outData << '\n';
-	      diff = i;
-	      state = SynchToStatesMulti(i,k,state, maxLength, &outData, data,
-					 dataLength, synchString0);
-	      
-	      //Adjust for synch time, check for end of line
-	      if (CheckSynchError(i, state, synchString0, parsetree, isMulti,
-				  i-diff-1))
-		state = SynchToStatesMulti(i,k,state, maxLength, &outData,
-					   data, dataLength, synchString0);
+        //get series of states, and make frequency counts
+        while (i < dataLength) {
+            //end of line in data, resynchronize
+            if (data[i] == '\n') {
+                i = i + SYSTEM_CONST;
+                //if the last return was the last character altogether
+                if (i >= dataLength)
+                    break;
+                k = 0;
+                outData << '\n';
+                diff = i;
+                state = SynchToStatesMulti(i, k, state, maxLength, &outData, data,
+                                           dataLength, synchString0);
 
-	      diff = i - diff - 1;
-	      adjustedDataLength -= diff;				
-	      counts[state]++;
-	      outData << state << ";";
-	      symbol[0] = data[i];
-	    }
+                //Adjust for synch time, check for end of line
+                if (CheckSynchError(i, state, synchString0, parsetree, isMulti,
+                                    i - diff - 1))
+                    state = SynchToStatesMulti(i, k, state, maxLength, &outData,
+                                               data, dataLength, synchString0);
 
-	  state = m_StateArray[state]->getTransitions
-	    (hashtable->WhichIndex(symbol)); 
-				
-	  //null transition, bad model, must resynchronize
-	  if(state == NULL_STATE)
-	    {
-	      diff = i;
-	      m_reSynch = true;
-	      state = SynchToStatesMulti(i,k,state, maxLength, &outData, data, 
-					 dataLength, synchString0);
-	      
-	      
-	      //Adjust for synch time, check for end of line
-	      if (CheckSynchError(i, state, synchString0, parsetree, isMulti,
-				  i-diff - 1))
-		state = SynchToStatesMulti(i,k,state, maxLength, &outData,
-					   data, dataLength, synchString0);
+                diff = i - diff - 1;
+                adjustedDataLength -= diff;
+                counts[state]++;
+                outData << state << ";";
+                symbol[0] = data[i];
+            }
 
-	      i--;
-	      diff = i - diff - 1;
-	      adjustedDataLength -= diff;	
-	    }
-	  counts[state]++;
-	  outData << state << ";";
-	  i++;
-	  symbol[0] = data[i];
-	}
-      outData.close();
+            state = m_StateArray[state]->getTransitions
+                    (hashtable->WhichIndex(symbol));
 
-      for(int q =0; q < m_arraySize; q++)
-	m_StateArray[q]->setFrequency((double)counts[q]/(double)
-				      adjustedDataLength);
+            //null transition, bad model, must resynchronize
+            if (state == NULL_STATE) {
+                diff = i;
+                m_reSynch = true;
+                state = SynchToStatesMulti(i, k, state, maxLength, &outData, data,
+                                           dataLength, synchString0);
+
+
+                //Adjust for synch time, check for end of line
+                if (CheckSynchError(i, state, synchString0, parsetree, isMulti,
+                                    i - diff - 1))
+                    state = SynchToStatesMulti(i, k, state, maxLength, &outData,
+                                               data, dataLength, synchString0);
+
+                i--;
+                diff = i - diff - 1;
+                adjustedDataLength -= diff;
+            }
+            counts[state]++;
+            outData << state << ";";
+            i++;
+            symbol[0] = data[i];
+        }
+        outData.close();
+
+        for (int q = 0; q < m_arraySize; q++)
+            m_StateArray[q]->setFrequency((double) counts[q] / (double)
+                    adjustedDataLength);
     }
- 
-  delete[] counts;
-  delete[] symbol;
-  delete[] inputFile;
-  delete[] synchString0;
-} 
+
+    delete[] counts;
+    delete[] symbol;
+    delete[] inputFile;
+    delete[] synchString0;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1432,43 +1328,39 @@ void AllStates::GetStateDistsMulti(ParseTree& parsetree, char input[],
 // Post-Cond: data is no longer counted in parse tree, have determined
 //            whehter more synchronization is needed
 //////////////////////////////////////////////////////////////////////////
-bool AllStates::CheckSynchError(int index,int state, char*& synchString0, 
-				ParseTree& parsetree, bool isMulti, int diff)
-{
-  
-  bool isSynchAgain = false;
-  int dataSize = parsetree.getDataSize();
-  
-  //if it took longer than zero steps (data points) to synchronize
-  if(diff > 0)
-    {
-      //if state is still null here, something is VERY wrong
-      if(state == NULL_STATE && ((index >= dataSize - 1) || (!isMulti)))
-	{
-	  cerr << "\nError: Could not synchronize, cannot use this data. "
-	       << endl
-	       << "AllStates::GetStateDistsMulti\n" << endl
-	       << "Note: For some reason this program cannot synchronize to a"
-	       << "state at any point in the data.  "
-	       << "See 'ReadMe' for details.\n" 
-	       << endl;
-	  exit(1);
-	}
-      //if end of line reached before synched
-      else if(state == NULL_STATE && isMulti)
-	{
-	  //call synch to states again
-	  isSynchAgain = true;
-	}
-      //decrement synchString from tree
-      parsetree.MakeSynchAdjustements(synchString0, index);
+bool AllStates::CheckSynchError(int index, int state, char *&synchString0,
+                                ParseTree &parsetree, bool isMulti, int diff) {
+
+    bool isSynchAgain = false;
+    int dataSize = parsetree.getDataSize();
+
+    //if it took longer than zero steps (data points) to synchronize
+    if (diff > 0) {
+        //if state is still null here, something is VERY wrong
+        if (state == NULL_STATE && ((index >= dataSize - 1) || (!isMulti))) {
+            std::cerr << "\nError: Could not synchronize, cannot use this data. "
+                      << std::endl
+                      << "AllStates::GetStateDistsMulti\n" << std::endl
+                      << "Note: For some reason this program cannot synchronize to a"
+                      << "state at any point in the data.  "
+                      << "See 'ReadMe' for details.\n"
+                      << std::endl;
+            exit(1);
+        }
+            //if end of line reached before synched
+        else if (state == NULL_STATE && isMulti) {
+            //call synch to states again
+            isSynchAgain = true;
+        }
+        //decrement synchString from tree
+        parsetree.MakeSynchAdjustements(synchString0, index);
     }
-  //clear synchstring
-  delete[] synchString0;
-  synchString0 = NULL;
-  synchString0 = new char[MAX_STRING];
-  
-  return isSynchAgain;
+    //clear synchstring
+    delete[] synchString0;
+    synchString0 = NULL;
+    synchString0 = new char[MAX_STRING];
+
+    return isSynchAgain;
 }
 
 
@@ -1483,76 +1375,72 @@ bool AllStates::CheckSynchError(int index,int state, char*& synchString0,
 // Pre- Cond: state sequence is unsynched
 // Post-Cond: state sequence is synched
 //////////////////////////////////////////////////////////////////////////
-int AllStates::SynchToStatesMulti(int& index, int& lineIndex,int state,
-				  int maxLength, ofstream *outData, char* data,
-				  int dataLength, char*& synchString)
-{
-  char* string = new char[maxLength + 1 + END_STRING];
-  char* tempString;
-  int tempIndex = 0;
-  int synchCount = 0;
-  char* symbol = new char[2];
-  char* tempSynch;
-  symbol[0] = data[index];
-  int tempMax = MAX_STRING - 1;
-	
-  symbol[1] = '\0';
-  //synchString[1] = '\0';
-  
-  strcpy(string, symbol);
-	 
-  //synchronize to states
-  do{
-    if(lineIndex > 0)
-      *outData << "?;";
-
-    state = m_table->WhichStateNumber(string);
-
-    if(state == NULL_STATE && tempIndex == 0)
-      strcpy(synchString, symbol);
-    else if(state == NULL_STATE)
-      strcat(synchString, symbol);
-
-    index++;
-    lineIndex++;
-    tempIndex++;
+int AllStates::SynchToStatesMulti(int &index, int &lineIndex, int state,
+                                  int maxLength, std::ofstream *outData, char *data,
+                                  int dataLength, char *&synchString) {
+    char *string = new char[maxLength + 1 + END_STRING];
+    char *tempString;
+    int tempIndex = 0;
+    int synchCount = 0;
+    char *symbol = new char[2];
+    char *tempSynch;
     symbol[0] = data[index];
-				
-    if(data[index] == '\n')
-      {
-	lineIndex = 0;
-	tempIndex = 0;
-	index = index + SYSTEM_CONST;
-	*outData<<'\n';
-	break;
-      }
-			
-    if(tempIndex >= maxLength)
-      {
-	tempString = new char[maxLength +  1 + END_STRING];
-	string++;
-	strcpy(tempString, string);
-	string--;
-	delete[] string;
-	string = tempString;
-      }
+    int tempMax = MAX_STRING - 1;
 
-    if(tempIndex >= tempMax)
-      {
-	
-	tempMax += MAX_STRING - 1;
-	tempSynch = new char[tempMax + END_STRING];
-	strcpy(tempSynch, synchString);
-	delete[] synchString;
-	synchString = tempSynch;
-	tempSynch = NULL;
-      }
-    strcat(string,symbol);
-  } while(state == NULL_STATE && index < dataLength);
+    symbol[1] = '\0';
+    //synchString[1] = '\0';
 
-  delete[] symbol;
-  delete[] string;
-  return state;
+    strcpy(string, symbol);
+
+    //synchronize to states
+    do {
+        if (lineIndex > 0)
+            *outData << "?;";
+
+        state = m_table->WhichStateNumber(string);
+
+        if (state == NULL_STATE && tempIndex == 0)
+            strcpy(synchString, symbol);
+        else if (state == NULL_STATE)
+            strcat(synchString, symbol);
+
+        index++;
+        lineIndex++;
+        tempIndex++;
+        symbol[0] = data[index];
+
+        if (data[index] == '\n') {
+            lineIndex = 0;
+            tempIndex = 0;
+            index = index + SYSTEM_CONST;
+            *outData << '\n';
+            break;
+        }
+
+        if (tempIndex >= maxLength) {
+            tempString = new char[maxLength + 1 + END_STRING];
+            string++;
+            strcpy(tempString, string);
+            string--;
+            delete[] string;
+            string = tempString;
+        }
+
+        if (tempIndex >= tempMax) {
+
+            tempMax += MAX_STRING - 1;
+            tempSynch = new char[tempMax + END_STRING];
+            strcpy(tempSynch, synchString);
+            delete[] synchString;
+            synchString = tempSynch;
+            tempSynch = NULL;
+        }
+        strcat(string, symbol);
+    } while (state == NULL_STATE && index < dataLength);
+
+    delete[] symbol;
+    delete[] string;
+    return state;
 }
 
 
@@ -1560,19 +1448,16 @@ int AllStates::SynchToStatesMulti(int& index, int& lineIndex,int state,
 // Function: ~AllStates
 // Purpose: destructor for AllStates
 ///////////////////////////////////////////////////////////////////////////
-AllStates::~AllStates()
-{ 
-  if(m_StateArray)
-    {
-      for(int i = 0; i < m_arraySize; i++)
-	{
-	  delete m_StateArray[i];
-	  m_StateArray[i] = NULL;
-	}
-      delete[] m_StateArray;
+AllStates::~AllStates() {
+    if (m_StateArray) {
+        for (int i = 0; i < m_arraySize; i++) {
+            delete m_StateArray[i];
+            m_StateArray[i] = NULL;
+        }
+        delete[] m_StateArray;
     }
-  if(m_table)
-    delete m_table;
+    if (m_table)
+        delete m_table;
 }
 
 
@@ -1580,18 +1465,17 @@ AllStates::~AllStates()
 // Function: AllStates     
 // Purpose: constructor for AllStates
 ///////////////////////////////////////////////////////////////////////////
-AllStates::AllStates(int distSize, double sigLevel, bool isChi)
-{
-  m_reSynch = false;
-  m_sigLevel = sigLevel;
-  m_test = new Test(isChi);
-  m_distSize = distSize;
-  m_arraySize = 0;
-  m_maxArraySize = INITIAL_SIZE;
-  m_StateArray = new State*[INITIAL_SIZE];
-  for(int i=0; i < INITIAL_SIZE; i++)
-    m_StateArray[i] = NULL;
-  m_table = new HashTable;
+AllStates::AllStates(int distSize, double sigLevel, bool isChi) {
+    m_reSynch = false;
+    m_sigLevel = sigLevel;
+    m_test = new Test(isChi);
+    m_distSize = distSize;
+    m_arraySize = 0;
+    m_maxArraySize = INITIAL_SIZE;
+    m_StateArray = new State *[INITIAL_SIZE];
+    for (int i = 0; i < INITIAL_SIZE; i++)
+        m_StateArray[i] = NULL;
+    m_table = new HashTable;
 }
 
 
@@ -1604,12 +1488,11 @@ AllStates::AllStates(int distSize, double sigLevel, bool isChi)
 // Pre- Cond: distributions have been calculated and set into arrays
 // Post-Cond: sig level is  known
 //////////////////////////////////////////////////////////////////////////
-double AllStates::Compare(int k,int j)
-{
-  return m_test->RunTest(m_StateArray[k]->getCurrentDist(),
-			 m_StateArray[k]->getCount(),
-			 m_StateArray[j]->getCurrentDist(),
-			 m_StateArray[j]->getCount(), m_distSize);
+double AllStates::Compare(int k, int j) {
+    return m_test->RunTest(m_StateArray[k]->getCurrentDist(),
+                           m_StateArray[k]->getCount(),
+                           m_StateArray[j]->getCurrentDist(),
+                           m_StateArray[j]->getCount(), m_distSize);
 }
 
 
@@ -1622,12 +1505,11 @@ double AllStates::Compare(int k,int j)
 // Pre- Cond: distributions have been calculated and set into arrays
 // Post-Cond: sig level is  known
 //////////////////////////////////////////////////////////////////////////
-double AllStates::Compare(int k, double newDist[], int count)
-{
-  return m_test->RunTest(m_StateArray[k]->getCurrentDist(),
-			 m_StateArray[k]->getCount(), newDist,count,
-			 m_distSize);
-}    
+double AllStates::Compare(int k, double newDist[], int count) {
+    return m_test->RunTest(m_StateArray[k]->getCurrentDist(),
+                           m_StateArray[k]->getCount(), newDist, count,
+                           m_distSize);
+}
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1639,10 +1521,9 @@ double AllStates::Compare(int k, double newDist[], int count)
 // Pre- Cond: distributions have been calculated and set into arrays
 // Post-Cond: sig level is  known
 //////////////////////////////////////////////////////////////////////////
-double AllStates::Compare(State* state, double newDist[], int count)
-{
-  return m_test->RunTest(state->getCurrentDist(), state->getCount(), newDist,
-			 count, m_distSize);
+double AllStates::Compare(State *state, double newDist[], int count) {
+    return m_test->RunTest(state->getCurrentDist(), state->getCount(), newDist,
+                           count, m_distSize);
 }
 
 

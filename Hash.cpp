@@ -32,43 +32,36 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-HashTable::HashTable()
-{
-  for(int i=0;i<HASHSIZE;i++)
-    {
-      m_data[i] = NULL;
+HashTable::HashTable() {
+    for (int i = 0; i < HASHSIZE; i++) {
+        m_data[i] = NULL;
     }
 }
 
 
-HashTable::~HashTable()
-{
-  for (int i =0;i<HASHSIZE;i++)
-    {
-      if (m_data[i] !=NULL)
-	{
-	  HashTableEntry* temp1;
-	  HashTableEntry* temp2 = m_data[i]->m_nextPtr; 
-	  while(temp2!=NULL)
-	    {
-	      temp1 = temp2;
-	      temp2 = temp2->m_nextPtr;
-	      //delete hash entries in list
-	      delete temp1;
-	      temp1 = NULL;
-	    }
-	  //delete node for main hash entry
-	  delete m_data[i];
-	  m_data[i] = NULL;
-	}
+HashTable::~HashTable() {
+    for (int i = 0; i < HASHSIZE; i++) {
+        if (m_data[i] != NULL) {
+            HashTableEntry *temp1;
+            HashTableEntry *temp2 = m_data[i]->m_nextPtr;
+            while (temp2 != NULL) {
+                temp1 = temp2;
+                temp2 = temp2->m_nextPtr;
+                //delete hash entries in list
+                delete temp1;
+                temp1 = NULL;
+            }
+            //delete node for main hash entry
+            delete m_data[i];
+            m_data[i] = NULL;
+        }
     }
 }
 
 
-int HashTable::Hash(ulong key)
-{
-  int hashValue = key % HASHSIZE;
-  return hashValue;
+int HashTable::Hash(ulong key) {
+    int hashValue = key % HASHSIZE;
+    return hashValue;
 }
 
 
@@ -79,36 +72,31 @@ int HashTable::Hash(ulong key)
 //		   element at the front of the list. 
 //In parameter: new element and it's parent state
 ////////////////////////////////////////////////////////////////
-void HashTable::Insert(StringElem* elem, State* state)
-{
-  if(elem == NULL)
-    {
-      cerr << "Cannot insert null pointer into Hash Table\n";
-      exit(1);
+void HashTable::Insert(StringElem *elem, State *state) {
+    if (elem == NULL) {
+        std::cerr << "Cannot insert null pointer into Hash Table\n";
+        exit(1);
     }
 
-  ulong key = CreateKey(elem->m_string);
-  int hashValue = Hash(key);
+    ulong key = CreateKey(elem->m_string);
+    int hashValue = Hash(key);
 
-  //create a new HashTableEntry and put it at the front of the list
-  if((hashValue >= 0) && (hashValue < HASHSIZE))
-    {
-      HashTableEntry* temp1 = new HashTableEntry;
-      if (temp1 == NULL)
-	{
-	  cerr << "Out of memory." << endl;
-	  exit(1);
-	}
+    //create a new HashTableEntry and put it at the front of the list
+    if ((hashValue >= 0) && (hashValue < HASHSIZE)) {
+        HashTableEntry *temp1 = new HashTableEntry;
+        if (temp1 == NULL) {
+            std::cerr << "Out of memory." << std::endl;
+            exit(1);
+        }
 
-      temp1->m_stringPtr = elem;
-      temp1->m_statePtr = state;
-      HashTableEntry* temp2;
-      temp2 = m_data[hashValue];
-      m_data[hashValue] = temp1;
-      temp1->m_nextPtr = temp2;
-    }
-  else
-    cerr << "Invalid hash value "<<endl;
+        temp1->m_stringPtr = elem;
+        temp1->m_statePtr = state;
+        HashTableEntry *temp2;
+        temp2 = m_data[hashValue];
+        m_data[hashValue] = temp1;
+        temp1->m_nextPtr = temp2;
+    } else
+        std::cerr << "Invalid hash value " << std::endl;
 }
 
 
@@ -119,28 +107,25 @@ void HashTable::Insert(StringElem* elem, State* state)
 //In parameter: string to check
 //Return value: pointer to address of appropriate state
 ////////////////////////////////////////////////////////////////
-State* HashTable::WhichState(char* string)
-{
-  if (string == '\0')
-    {
-      cerr << "Cannot check matching state for empty string\n";
-      exit(1);
+State *HashTable::WhichState(char *string) {
+    if (strcmp(string, "\0") == 0) {
+        std::cerr << "Cannot check matching state for empty string\n";
+        exit(1);
     }
 
-  ulong currentKey = CreateKey(string);
-  int hashValue = Hash(currentKey);
-  State* statePtr = NULL;
+    ulong currentKey = CreateKey(string);
+    int hashValue = Hash(currentKey);
+    State *statePtr = NULL;
 
-  //traverse list
-  HashTableEntry* temp = m_data[hashValue];
-  while((temp != NULL) && (statePtr == NULL))
-    {
-      if(strcmp(string,(temp->m_stringPtr->m_string))==0)
-	statePtr = temp->m_statePtr;
-		
-      temp = temp->m_nextPtr;
+    //traverse list
+    HashTableEntry *temp = m_data[hashValue];
+    while ((temp != NULL) && (statePtr == NULL)) {
+        if (strcmp(string, (temp->m_stringPtr->m_string)) == 0)
+            statePtr = temp->m_statePtr;
+
+        temp = temp->m_nextPtr;
     }
-  return statePtr;
+    return statePtr;
 }
 
 
@@ -151,103 +136,91 @@ State* HashTable::WhichState(char* string)
 //In parameter: string to check
 //Return value: assigned number of appropriate state
 ////////////////////////////////////////////////////////////////
-int HashTable::WhichStateNumber(char* string)
-{
-  if (string == '\0')
-    {
-      cerr << "Cannot check matching state for empty string\n";
-      exit(1);
+int HashTable::WhichStateNumber(char *string) {
+    if (strcmp(string, "\0") == 0) {
+        std::cerr << "Cannot check matching state for empty string\n";
+        exit(1);
     }
 
-  ulong currentKey = CreateKey(string);
-  int hashValue = Hash(currentKey);
-  State* statePtr = NULL;
+    ulong currentKey = CreateKey(string);
+    int hashValue = Hash(currentKey);
+    State *statePtr = NULL;
 
-  //traverse list
-  HashTableEntry* temp = m_data[hashValue];
-  while((temp != NULL) && (statePtr == NULL))
-    {
-      if(strcmp(string,(temp->m_stringPtr->m_string))==0)
-	statePtr = temp->m_statePtr;
-      temp = temp->m_nextPtr;
+    //traverse list
+    HashTableEntry *temp = m_data[hashValue];
+    while ((temp != NULL) && (statePtr == NULL)) {
+        if (strcmp(string, (temp->m_stringPtr->m_string)) == 0)
+            statePtr = temp->m_statePtr;
+        temp = temp->m_nextPtr;
     }
 
-  if(statePtr)
-    return statePtr->getNumber();
-  else
-    return NULL_STATE;
+    if (statePtr)
+        return statePtr->getNumber();
+    else
+        return NULL_STATE;
 }
 
 
+ulong HashTable::CreateKey(char *string) {
+    ulong key = 0;
+    const char *ptr = string;
 
-ulong HashTable::CreateKey(char* string)
-{
-  ulong key = 0;
-  const char *ptr = string;
+    while (*ptr)
+        key += (key << 5) + *ptr++;
 
-  while(*ptr)
-    key += (key <<5) + *ptr++;
-
-  return key;
+    return key;
 }
 
 
-void HashTable::Print()
-{
-  HashTableEntry* temp;
-  for (int i = 0; i < HASHSIZE; i++)
-    {
-      temp = m_data[i];
-      while(temp!= NULL)
-	{
-	  cout << temp->m_stringPtr->m_string<<endl;
-	  temp = temp->m_nextPtr;
-	}
+void HashTable::Print() {
+    HashTableEntry *temp;
+    for (int i = 0; i < HASHSIZE; i++) {
+        temp = m_data[i];
+        while (temp != NULL) {
+            std::cout << temp->m_stringPtr->m_string << std::endl;
+            temp = temp->m_nextPtr;
+        }
     }
 }
 
 
-void HashTable::RemoveString(char* string)
-{
-  if (string == '\0')
-    {
-      cerr << "Cannot check matching state for empty string\n";
-      exit(1);
+void HashTable::RemoveString(char *string) {
+    if (strcmp(string, "\0") == 0) {
+        std::cerr << "Cannot check matching state for empty string\n";
+        exit(1);
     }
 
-  ulong currentKey = CreateKey(string);
-  int hashValue = Hash(currentKey);
-  State* statePtr = NULL;
-  StringElem* stringPtr = NULL;
+    ulong currentKey = CreateKey(string);
+    int hashValue = Hash(currentKey);
+    State *statePtr = NULL;
+    StringElem *stringPtr = NULL;
 
-  //traverse list
-  HashTableEntry* temp = m_data[hashValue];
-  HashTableEntry* temp2;
-  while((temp != NULL) && (strcmp(string,(temp->m_stringPtr->m_string))!=0))
-    {
-      temp2 = temp;		
-      temp = temp->m_nextPtr;
+    //traverse list
+    HashTableEntry *temp = m_data[hashValue];
+    HashTableEntry *temp2;
+    while ((temp != NULL) && (strcmp(string, (temp->m_stringPtr->m_string)) != 0)) {
+        temp2 = temp;
+        temp = temp->m_nextPtr;
     }
 
-  if(temp!=NULL)
-    {
-      //when proper pointers have been found
-      stringPtr = temp->m_stringPtr;
-      statePtr = temp->m_statePtr;
+    if (temp != NULL) {
+        //when proper pointers have been found
+        stringPtr = temp->m_stringPtr;
+        statePtr = temp->m_statePtr;
 
-      //remove string from state
-      statePtr->RemoveString(stringPtr);
+        //remove string from state
+        statePtr->RemoveString(stringPtr);
 
-      //remove hash table entry
-      if(temp == m_data[hashValue])
-	m_data[hashValue] = temp->m_nextPtr;
+        //remove hash table entry
+        if (temp == m_data[hashValue])
+            m_data[hashValue] = temp->m_nextPtr;
 
-      else
-	temp2->m_nextPtr = temp->m_nextPtr;
+        else
+            temp2->m_nextPtr = temp->m_nextPtr;
 
 
-	  //remove entry from table
-      delete temp;
+        //remove entry from table
+        delete temp;
     }
-  return;
+    return;
 }

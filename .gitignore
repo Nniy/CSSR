@@ -1,0 +1,12 @@
+.idea/
+CSSR.exe
+allStates.o
+g_array.o
+hash.o
+hash2.o
+machine.o
+main.o
+parsetree.o
+states.o
+test.o
+transtable.o
